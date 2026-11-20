@@ -1,0 +1,1519 @@
+# MASTER PROMPT – XÂY DỰNG WEBSITE KẾ HOẠCH THU CHI
+
+## I. VAI TRÒ VÀ MỤC TIÊU DỰ ÁN
+
+Bạn hãy đóng vai một đội ngũ chuyên gia bao gồm:
+
+1. Chuyên gia phân tích nghiệp vụ (Business Analyst).
+2. Chuyên gia thiết kế UX/UI.
+3. Kiến trúc sư phần mềm (Software Architect).
+4. Lập trình viên Frontend chuyên nghiệp.
+5. Chuyên gia xây dựng hệ thống quản lý tài chính cá nhân.
+6. Chuyên gia tích hợp AI, OCR và nhận dạng giọng nói.
+
+Nhiệm vụ của bạn là phân tích, thiết kế và xây dựng một website quản lý tài chính cá nhân có tên:
+
+**KẾ HOẠCH THU CHI**
+
+Sản phẩm tham khảo cách quản lý thu chi của ứng dụng MISA và hai hình ảnh giao diện được cung cấp.
+
+Tuy nhiên, không sao chép nguyên mẫu. Hãy phát triển một sản phẩm có giao diện hiện đại, đáng yêu, trực quan, thao tác đơn giản và có tính ứng dụng thực tế cao.
+
+Mục tiêu là tạo ra một website hoàn chỉnh, không chỉ dừng lại ở bản thiết kế giao diện hoặc prototype.
+
+Tất cả các nút bấm, biểu mẫu, bộ lọc, biểu đồ, lịch, chức năng thêm, sửa, xóa, lưu trữ và thống kê đều phải hoạt động thực tế.
+
+Không tạo dữ liệu giả để minh họa khi hệ thống đã có dữ liệu thực tế. Không để những nút bấm chỉ mang tính trang trí.
+
+---
+
+# II. NGUYÊN TẮC KIẾN TRÚC VÀ CÔNG NGHỆ
+
+## 1. Công nghệ đề xuất
+
+Ưu tiên sử dụng:
+
+- Frontend: ReactJS + TypeScript.
+- Build tool: Vite.
+- Giao diện: Tailwind CSS.
+- Component: shadcn/ui hoặc thư viện tương đương.
+- Icon: Lucide Icons.
+- Biểu đồ: Recharts.
+- Lưu trữ dữ liệu: IndexedDB kết hợp Dexie.js.
+- Quản lý trạng thái: Zustand.
+- Xử lý ngày tháng: date-fns.
+- PWA: hỗ trợ cài đặt website như ứng dụng trên điện thoại và máy tính.
+- Web Crypto API: hỗ trợ mã hóa dữ liệu và các chức năng bảo mật cục bộ.
+
+Có thể lựa chọn công nghệ tương đương nếu chứng minh được khả năng vận hành tốt hơn.
+
+## 2. Yêu cầu lưu trữ dữ liệu
+
+Đây là hệ thống Local-first.
+
+Bắt buộc:
+
+- Không sử dụng Supabase.
+- Không sử dụng Firebase.
+- Không yêu cầu backend trực tuyến.
+- Không bắt buộc kết nối ngân hàng.
+- Không yêu cầu kết nối ví điện tử.
+- Không gửi dữ liệu tài chính cá nhân lên máy chủ bên ngoài.
+- Dữ liệu được lưu trực tiếp trên thiết bị.
+- Có khả năng sử dụng khi mất kết nối Internet đối với các chức năng cục bộ.
+
+Sử dụng IndexedDB làm cơ sở dữ liệu chính, không sử dụng LocalStorage làm nơi lưu trữ toàn bộ giao dịch.
+
+Có chức năng:
+- Xuất dữ liệu để sao lưu.
+- Nhập dữ liệu để khôi phục.
+- Sao lưu toàn bộ tài khoản, giao dịch, hình ảnh, danh mục, thiết lập và các sổ riêng.
+- Có cơ chế kiểm tra dữ liệu trùng lặp khi khôi phục.
+- Có thông báo trước khi ghi đè dữ liệu.
+- Có khả năng xuất báo cáo Excel/CSV và PDF.
+
+Lưu ý: Nếu người dùng xóa dữ liệu trình duyệt, đổi thiết bị hoặc mất thiết bị, dữ liệu cục bộ có thể mất. Vì vậy phải có nhắc nhở sao lưu định kỳ.
+
+## 3. Tài khoản người dùng
+
+Thiết kế màn hình đăng nhập và tạo tài khoản đơn giản.
+
+Thông tin đăng ký:
+- Email hoặc số điện thoại.
+- Mật khẩu.
+- Xác nhận mật khẩu nếu sử dụng mật khẩu.
+
+Có thể bổ sung mã PIN để mở nhanh.
+
+Yêu cầu:
+- Không yêu cầu khai báo quá nhiều thông tin.
+- Cho phép ghi nhớ đăng nhập.
+- Không yêu cầu nhập lại thông tin mỗi lần mở website.
+- Có chức năng đăng xuất.
+- Có chức năng khóa ứng dụng.
+- Có chức năng đổi mật khẩu hoặc mã PIN cục bộ.
+- Có tùy chọn khóa tự động sau khoảng thời gian không hoạt động.
+
+Email/số điện thoại trong phiên bản Local-first chỉ đóng vai trò định danh hồ sơ cục bộ, không được giả lập việc gửi mã OTP hoặc xác thực trực tuyến.
+
+Nếu người dùng tạo tài khoản trên một thiết bị khác, không tự động nhận được dữ liệu từ thiết bị cũ. Muốn chuyển dữ liệu phải sử dụng chức năng sao lưu và khôi phục.
+
+---
+
+# III. ĐỊNH HƯỚNG THIẾT KẾ UX/UI
+
+## 1. Phong cách giao diện
+
+Từ khóa thiết kế:
+
+- Cute.
+- Minimalist.
+- Modern.
+- Fresh.
+- Friendly.
+- Financial dashboard.
+- Pastel color.
+- Clean layout.
+- Mobile-first.
+
+Website phải tạo cảm giác nhẹ nhàng, tích cực, thân thiện, không giống phần mềm kế toán khô cứng.
+
+Sử dụng các khối thông tin có bo góc, khoảng trắng hợp lý, bóng đổ nhẹ, biểu tượng trực quan và màu sắc phân biệt rõ ràng.
+
+Không sử dụng quá nhiều màu gây rối mắt.
+
+## 2. Nhân vật thương hiệu
+
+Thiết kế nhân vật đại diện thương hiệu là một củ cải nhỏ dễ thương:
+
+- Hình dáng củ cải tròn, cách điệu.
+- Hai chiếc lá xanh mọc trên đầu.
+- Khuôn mặt cười híp mắt.
+- Má hồng nhẹ.
+- Phong cách hoạt hình 2D.
+- Nét vẽ mềm mại.
+- Có thể tạo nhiều biểu cảm khác nhau.
+
+Nhân vật được sử dụng tại:
+- Landing page.
+- Màn hình chào mừng.
+- Màn hình đăng nhập.
+- Trạng thái chưa có giao dịch.
+- Thông báo hoàn thành mục tiêu tiết kiệm.
+- Thông báo vượt ngân sách.
+- Trạng thái tải dữ liệu.
+- Các thông báo thân thiện.
+
+Không để nhân vật xuất hiện quá dày đặc trong các màn hình quản lý chính.
+
+## 3. Hệ thống màu sắc
+
+Màu chủ đạo mặc định đề xuất:
+
+- Xanh lá đậm: #294D3E.
+- Xanh lá tươi: #20B889.
+- Xanh mint nhạt: #E9F7EF.
+- Trắng: #FFFFFF.
+- Nền xám xanh nhạt: #F5F8F6.
+- Đỏ thuần nhẹ: #E45F63.
+- Vàng cam: #F2B85B.
+
+Quy ước màu:
+
+- Thu nhập: xanh lá.
+- Chi tiêu: đỏ/cam.
+- Số dư: xanh lá đậm.
+- Cảnh báo vượt ngân sách: đỏ.
+- Tiết kiệm: xanh dương hoặc xanh lá.
+- Khoản vay: tím.
+- Khoản cho vay: xanh dương.
+- Khoản đặc biệt: sử dụng màu do người dùng tự chọn.
+
+Mỗi danh mục có:
+- Tên.
+- Sticker/icon.
+- Màu sắc.
+- Mô tả tùy chọn.
+
+Cho phép người dùng tự thay đổi màu chủ đạo trong Cài đặt.
+
+## 4. Bố cục responsive
+
+Thiết kế ưu tiên điện thoại vì người dùng thường xuyên nhập chi tiêu ngay khi mua hàng.
+
+Trên điện thoại:
+- Thanh điều hướng dưới cùng.
+- Nút thêm giao dịch nổi bật.
+- Các biểu mẫu mở dạng bottom sheet hoặc modal.
+- Có thể thao tác bằng một tay.
+- Không bắt buộc nhập quá nhiều thông tin.
+
+Trên máy tính:
+- Sidebar bên trái.
+- Khu vực nội dung chính.
+- Dashboard có thể chia thành nhiều cột.
+- Bảng và biểu đồ hiển thị rộng rãi.
+
+Đảm bảo giao diện hoạt động tốt trên điện thoại, tablet và desktop.
+
+---
+
+# IV. CẤU TRÚC ĐIỀU HƯỚNG WEBSITE
+
+Thiết kế 6 khu vực chính:
+
+1. Tổng quan.
+2. Chi tiết thu chi.
+3. Lịch tài chính.
+4. Báo cáo chi tiết.
+5. Khác.
+6. Cài đặt.
+
+Có nút thêm giao dịch nhanh luôn dễ nhìn, dễ thao tác.
+
+---
+
+# V. CHI TIẾT CÁC CHỨC NĂNG
+
+# 1. TỔNG QUAN – DASHBOARD TÀI CHÍNH
+
+Đây là màn hình quan trọng nhất, xuất hiện đầu tiên sau khi đăng nhập.
+
+Mục tiêu: Chỉ cần mở website, người dùng có thể hiểu ngay tình hình tài chính hiện tại.
+
+## 1.1. Hai tab quản lý tài chính
+
+Thiết kế hai tab chuyển đổi:
+
+**TAB A – NGÂN SÁCH THÁNG**
+
+Hiển thị:
+
+- Tổng ngân sách dự kiến trong tháng.
+- Tổng thu trong tháng.
+- Tổng chi trong tháng.
+- Ngân sách đã sử dụng.
+- Số tiền còn lại.
+- Tỷ lệ đã sử dụng ngân sách.
+- Số tiền vượt ngân sách nếu có.
+
+Ví dụ:
+
+Ngân sách dự kiến: 8.000.000đ.
+
+Đã chi: 5.000.000đ.
+
+Còn lại: 3.000.000đ.
+
+Nếu chi vượt:
+
+Ngân sách dự kiến: 8.000.000đ.
+
+Đã chi: 8.500.000đ.
+
+Vượt ngân sách: 500.000đ.
+
+Có thanh tiến trình thể hiện mức sử dụng ngân sách.
+
+Khi vượt ngưỡng, chuyển màu cảnh báo và hiển thị thông báo phù hợp.
+
+Cho phép người dùng:
+- Thiết lập ngân sách đầu tháng.
+- Điều chỉnh ngân sách trong tháng.
+- Xem các tháng trước.
+- So sánh với tháng trước.
+- Thiết lập hạn mức theo từng danh mục chi tiêu.
+
+**TAB B – SỐ TIỀN THỰC TẾ HIỆN CÓ**
+
+Hiển thị tổng số dư của các tài khoản tài chính đang hoạt động.
+
+Ví dụ:
+
+| Tài khoản | Số dư |
+|---|---:|
+| Tiền mặt | 2.000.000đ |
+| MoMo | 3.000.000đ |
+| BIDV | 10.000.000đ |
+| Techcombank | 5.000.000đ |
+| Sacombank | 1.000.000đ |
+| Tổng cộng | 21.000.000đ |
+
+Người dùng có thể:
+- Thêm tài khoản.
+- Sửa tên tài khoản.
+- Chọn sticker.
+- Chọn màu.
+- Nhập số dư ban đầu.
+- Điều chỉnh số dư.
+- Ẩn hoặc hiện số dư.
+- Ngừng sử dụng tài khoản.
+
+Không yêu cầu liên kết ngân hàng.
+
+Tất cả số dư được người dùng tự nhập và cập nhật thông qua giao dịch hoặc điều chỉnh thủ công.
+
+Lưu ý: Nếu có điều chỉnh số dư thủ công, phải ghi nhận lịch sử điều chỉnh để người dùng có thể kiểm tra.
+
+## 1.2. Quản lý tài sản và các khoản riêng
+
+Bố trí một khu vực riêng, có thể thu gọn hoặc mở rộng.
+
+Bao gồm:
+
+**A. Sổ tiết kiệm**
+
+- Tên khoản tiết kiệm.
+- Ngân hàng hoặc nơi gửi.
+- Số tiền gốc.
+- Ngày gửi.
+- Ngày đáo hạn.
+- Lãi suất.
+- Kỳ hạn.
+- Ghi chú.
+- Hình ảnh giấy tờ nếu cần.
+
+**B. Sổ cho vay**
+
+- Người được cho vay.
+- Số tiền cho vay.
+- Ngày cho vay.
+- Ngày dự kiến hoàn trả.
+- Tình trạng thanh toán.
+- Có lãi hoặc không có lãi.
+
+Nếu chọn có lãi, hiển thị thêm:
+- Lãi suất (%/năm hoặc %/tháng).
+- Hoặc số tiền lãi cố định mỗi tháng.
+- Cách tính lãi.
+- Ngày bắt đầu tính lãi.
+- Tổng tiền lãi dự kiến.
+- Số tiền gốc đã thu hồi.
+- Số tiền lãi đã nhận.
+
+Nếu chọn không lãi thì không hiển thị các trường lãi suất.
+
+**C. Sổ đi vay**
+
+- Người hoặc đơn vị cho vay.
+- Số tiền vay.
+- Ngày vay.
+- Ngày phải trả.
+- Lãi suất nếu có.
+- Số tiền đã trả.
+- Số tiền còn nợ.
+- Lịch sử trả nợ.
+- Ghi chú.
+
+**D. Các khoản riêng khác**
+
+Cho phép người dùng tạo những mục theo dõi tài chính khác theo nhu cầu.
+
+QUY TẮC QUAN TRỌNG:
+
+Các khoản tiết kiệm, cho vay, đi vay và khoản theo dõi riêng không tự động cộng vào tổng số dư tài khoản đang sử dụng và không làm thay đổi ngân sách thu chi.
+
+Chúng là các sổ theo dõi độc lập.
+
+Khi người dùng thực hiện giao dịch thực tế, phải có thao tác ghi nhận rõ ràng để tránh cộng trùng tiền.
+
+## 1.3. Số tiền đã chi trong tháng
+
+Có một thẻ thống kê riêng:
+
+- Tổng tiền đã chi.
+- Số giao dịch.
+- Khoản chi lớn nhất.
+- Danh mục chi nhiều nhất.
+- So sánh với tháng trước.
+
+Có bộ chọn tháng/năm để xem lại dữ liệu lịch sử.
+
+## 1.4. Báo cáo nhanh trong tháng
+
+Hiển thị:
+
+- Tổng thu.
+- Tổng chi.
+- Chênh lệch thu chi.
+- Tỷ lệ chi tiêu.
+- Danh mục chi tiêu nhiều nhất.
+- Các khoản chi bất thường.
+- Tình hình sử dụng ngân sách.
+
+Biểu đồ tròn hoặc thanh ngang để thể hiện tỷ trọng từng danh mục chi.
+
+Có thể bấm vào từng danh mục để xem danh sách giao dịch tương ứng.
+
+---
+
+# 2. CHI TIẾT THU CHI
+
+Đây là khu vực quản lý toàn bộ các giao dịch thuộc sổ tài chính chính.
+
+Thiết kế hai tab:
+
+- THU.
+- CHI.
+
+Người dùng được tự tạo danh mục tùy ý, không bị giới hạn trong danh sách có sẵn.
+
+Hệ thống chỉ cung cấp danh mục mẫu và sticker để hỗ trợ thao tác ban đầu.
+
+## 2.1. TAB THU
+
+Mỗi giao dịch thu bao gồm:
+
+1. Số tiền.
+2. Danh mục thu.
+3. Tài khoản nhận tiền.
+4. Ngày nhận tiền.
+5. Giờ nhận tiền.
+6. Người gửi hoặc nguồn tiền (không bắt buộc).
+7. Ghi chú.
+8. Hình ảnh đính kèm (không bắt buộc).
+
+Danh mục mẫu:
+- Lương.
+- Thưởng.
+- Kinh doanh.
+- Được tặng.
+- Được trả tiền.
+- Thu hồi nợ.
+- Lãi tiết kiệm.
+- Tiền lãi cho vay.
+- Thu nhập khác.
+
+Người dùng có thể tự thêm danh mục mới.
+
+Ví dụ:
+
+Nhận lương 15.000.000đ từ Công ty A vào BIDV.
+
+Nhận 500.000đ được hoàn tiền qua MoMo.
+
+Nhận 1.000.000đ từ người thân qua tiền mặt.
+
+Tất cả đều được lưu vào lịch sử thu và cập nhật số dư tài khoản tương ứng.
+
+## 2.2. TAB CHI
+
+Mỗi giao dịch chi bao gồm:
+
+1. Số tiền.
+2. Danh mục chi.
+3. Tài khoản thanh toán.
+4. Ngày chi.
+5. Giờ chi.
+6. Ghi chú.
+7. Hình ảnh hóa đơn hoặc sản phẩm.
+8. Buổi chi tiêu (tùy chọn).
+
+Danh mục gợi ý:
+- Ăn uống.
+- Đi chợ.
+- Mua sắm.
+- Di chuyển.
+- Hóa đơn.
+- Điện nước.
+- Nhà cửa.
+- Sức khỏe.
+- Làm đẹp.
+- Giải trí.
+- Du lịch.
+- Giáo dục.
+- Gia đình.
+- Thú cưng.
+- Khác.
+
+Không giới hạn danh mục. Người dùng có thể tự tạo, sửa, xóa hoặc ẩn danh mục.
+
+## 2.3. Nhập giao dịch nhanh bằng văn bản
+
+Đây là tính năng ưu tiên hàng đầu.
+
+Tạo một ô nhập nhanh cho phép người dùng ghi chú tự nhiên, không cần mở biểu mẫu đầy đủ.
+
+Ví dụ:
+
+- 15k mua cá TM.
+- 15.9 20k rau MM.
+- 50k ăn sáng tiền mặt.
+- 120k đổ xăng momo.
+- 250k mua mỹ phẩm shopee.
+- 100k tiền điện BIDV.
+
+Hệ thống phân tích và tự động chuyển thành thông tin giao dịch.
+
+Ví dụ:
+
+Đầu vào: "15k mua cá TM".
+
+Kết quả:
+
+- Số tiền: 15.000đ.
+- Danh mục: Đi chợ.
+- Ghi chú: Mua cá.
+- Tài khoản: Tiền mặt.
+- Ngày: Ngày hiện tại.
+- Giờ: Thời điểm ghi nhận.
+
+Ví dụ:
+
+Đầu vào: "15.9 20k rau MM".
+
+Kết quả:
+
+- Ngày: 15/09/2026.
+- Số tiền: 20.000đ.
+- Ghi chú: Mua rau.
+- Tài khoản: MoMo.
+- Danh mục: Đi chợ.
+
+Các quy tắc:
+
+- k = nghìn đồng.
+- tr hoặc triệu = triệu đồng.
+- TM = tiền mặt nếu đã được thiết lập.
+- MM = MoMo nếu đã được thiết lập.
+- BIDV = tài khoản BIDV.
+- TCB = Techcombank nếu người dùng thiết lập.
+- Sacom = Sacombank nếu người dùng thiết lập.
+
+Người dùng được tự tạo bảng viết tắt riêng.
+
+Không tự suy đoán những từ viết tắt chưa được định nghĩa nếu có nhiều khả năng hiểu khác nhau.
+
+Nếu thiếu tài khoản thanh toán, hệ thống có thể để trống và yêu cầu người dùng lựa chọn sau.
+
+Nếu thiếu ngày, mặc định lấy ngày hiện tại.
+
+Nếu người dùng ghi ngày cụ thể, ưu tiên ngày đó.
+
+Nếu thiếu danh mục, đề xuất danh mục phù hợp và cho phép chỉnh sửa.
+
+Sau khi phân tích phải hiển thị bản xem trước để người dùng xác nhận.
+
+## 2.4. Nhập bằng giọng nói
+
+Thiết kế một nút micro nổi bật.
+
+Khi bấm:
+- Mở giao diện ghi âm.
+- Hiển thị trạng thái đang lắng nghe.
+- Hiển thị nội dung nhận dạng trực tiếp.
+- Có nút dừng.
+- Có nút ghi âm lại.
+- Có nút xác nhận.
+
+Ví dụ người dùng nói:
+
+"Sáng nay tôi ăn sáng hết 50 nghìn, trả bằng tiền mặt."
+
+Hệ thống tự phân tích:
+
+- Loại: Chi.
+- Số tiền: 50.000đ.
+- Danh mục: Ăn uống.
+- Ghi chú: Ăn sáng.
+- Tài khoản: Tiền mặt.
+- Buổi: Sáng.
+- Ngày: Hôm nay.
+
+Cho phép người dùng sửa lại trước khi lưu.
+
+Không tự động lưu giao dịch khi nhận dạng chưa chắc chắn.
+
+Ưu tiên công nghệ nhận dạng giọng nói trên thiết bị hoặc giải pháp hoạt động cục bộ. Nếu trình duyệt không hỗ trợ, phải thông báo và cung cấp phương án nhập văn bản thay thế.
+
+## 2.5. Chụp hóa đơn và nhận dạng bằng AI/OCR
+
+Thiết kế hai phương thức:
+
+- Chụp ảnh trực tiếp bằng camera.
+- Tải ảnh từ thư viện.
+
+Sau khi tải ảnh, hệ thống nhận dạng các thông tin có thể đọc được:
+
+- Tên cửa hàng.
+- Ngày hóa đơn.
+- Giờ.
+- Tên sản phẩm.
+- Số lượng.
+- Đơn giá.
+- Thành tiền.
+- Tổng thanh toán.
+- Phí vận chuyển.
+- Thuế nếu có.
+
+Hiển thị kết quả dưới dạng biểu mẫu có thể chỉnh sửa.
+
+Nếu hóa đơn có nhiều sản phẩm, cho phép:
+- Lưu từng sản phẩm thành một khoản chi riêng.
+- Hoặc gộp toàn bộ hóa đơn thành một giao dịch.
+- Người dùng được chọn phương án phù hợp.
+
+Nếu không đọc được tài khoản thanh toán, để trống.
+
+Nếu không đọc được ngày hoặc số tiền, yêu cầu người dùng bổ sung.
+
+Ảnh hóa đơn được lưu kèm giao dịch.
+
+## 2.6. Chụp ảnh sản phẩm và nhập số tiền
+
+Ngoài hóa đơn, người dùng có thể chụp trực tiếp món ăn hoặc sản phẩm vừa mua.
+
+Ví dụ:
+- Chụp một đĩa bánh cuốn.
+- Nhập 35.000đ.
+- Chọn tài khoản tiền mặt.
+- Lưu.
+
+Hoặc chụp một món đồ mua trên Shopee và nhập giá tiền.
+
+Ảnh được sử dụng làm hình minh họa trong lịch sử giao dịch.
+
+AI có thể gợi ý mô tả ảnh nhưng không được tự xác định giá tiền nếu không có căn cứ.
+
+## 2.7. Chọn buổi chi tiêu
+
+Có một thanh chọn tùy chọn:
+
+- Sáng.
+- Trưa.
+- Chiều.
+- Tối.
+
+Không bắt buộc chọn.
+
+Nếu ngày và giờ đã được nhập thì hệ thống có thể đề xuất buổi tương ứng, nhưng người dùng có thể sửa.
+
+## 2.8. Ngày giờ giao dịch
+
+Mặc định:
+
+- Ngày: Ngày hiện tại.
+- Giờ: Thời điểm tạo giao dịch.
+
+Người dùng có thể thay đổi ngày giờ.
+
+Có nút xóa ngày giờ để bỏ trống nếu muốn.
+
+Phải phân biệt:
+
+- Thời điểm thực hiện giao dịch.
+- Thời điểm người dùng nhập giao dịch.
+
+Hai thông tin này có thể khác nhau.
+
+Ví dụ: Người dùng hôm nay mới ghi lại khoản chi của ngày hôm qua.
+
+Hệ thống vẫn lưu ngày giao dịch là hôm qua và thời điểm ghi nhận là hôm nay.
+
+Đây là hai trường dữ liệu độc lập, không được ghi đè lẫn nhau.
+
+## 2.9. Quản lý danh mục thu chi
+
+Có khu vực quản lý danh mục riêng.
+
+Người dùng có thể:
+
+- Thêm danh mục.
+- Sửa tên.
+- Chọn sticker.
+- Chọn màu.
+- Chọn loại thu hoặc chi.
+- Sắp xếp thứ tự.
+- Ẩn danh mục.
+- Xóa danh mục nếu chưa phát sinh giao dịch.
+- Nếu đã có giao dịch, phải cho phép chuyển giao dịch sang danh mục khác trước khi xóa.
+
+Không xóa dữ liệu lịch sử chỉ vì người dùng thay đổi danh mục.
+
+---
+
+# 3. LỊCH TÀI CHÍNH
+
+Đây là khu vực giúp người dùng theo dõi thu chi trực quan theo từng ngày.
+
+## 3.1. Tổng quan tháng
+
+Phần đầu trang hiển thị:
+
+- Tháng/năm.
+- Tổng thu.
+- Tổng chi.
+- Chênh lệch thu chi.
+- Số ngày có phát sinh giao dịch.
+
+Có thanh chọn tháng/năm để chuyển đến bất kỳ thời điểm nào.
+
+Có nút quay về tháng hiện tại.
+
+## 3.2. Lịch theo tháng
+
+Hiển thị lịch đầy đủ từ thứ Hai đến Chủ nhật.
+
+Các cột:
+
+T2 – T3 – T4 – T5 – T6 – T7 – CN.
+
+Thứ Bảy và Chủ nhật có màu sắc nổi bật hơn một chút.
+
+Mỗi ô ngày hiển thị:
+- Ngày dương lịch.
+- Tổng thu trong ngày.
+- Tổng chi trong ngày.
+- Dấu chấm màu đại diện cho giao dịch hoặc sự kiện đặc biệt.
+
+Không để thông tin quá nhiều khiến lịch bị chật.
+
+Ngày có giao dịch thu/chi được thể hiện bằng màu sắc tương ứng.
+
+Khi bấm vào một ngày, hiển thị chi tiết tất cả giao dịch trong ngày đó.
+
+## 3.3. Chuyển đổi chế độ BASIC và KHÁC
+
+Thiết kế thanh chuyển đổi hai trạng thái:
+
+**BASIC**
+
+Chỉ hiển thị:
+- Lịch dương.
+- Ngày.
+- Tổng thu.
+- Tổng chi.
+- Dấu chấm thể hiện giao dịch.
+
+**KHÁC**
+
+Bổ sung:
+- Ngày âm lịch.
+- Lễ, Tết.
+- Sinh nhật.
+- Kỷ niệm.
+- Du lịch.
+- Sự kiện cá nhân.
+- Các ngày đặc biệt do người dùng tự tạo.
+
+Người dùng có thể:
+- Thêm sự kiện.
+- Đặt tên.
+- Chọn ngày.
+- Chọn màu.
+- Chọn sticker.
+- Viết ghi chú.
+- Chỉnh sửa.
+- Xóa.
+- Thiết lập sự kiện lặp lại hằng năm.
+
+Ví dụ:
+- Sinh nhật mẹ.
+- Sinh nhật chồng.
+- Kỷ niệm ngày cưới.
+- Đi du lịch Đà Lạt.
+- Ngày thanh toán hóa đơn.
+
+Các ngày đặc biệt được thể hiện bằng dấu chấm màu tương ứng trong chế độ BASIC nhưng không hiển thị toàn bộ nội dung sự kiện.
+
+Ngày âm lịch phải được tính theo lịch Việt Nam, múi giờ Asia/Ho_Chi_Minh, không sử dụng cách quy đổi đơn giản gây sai lệch.
+
+## 3.4. Danh sách giao dịch dưới lịch
+
+Khi cuộn xuống dưới, hiển thị danh sách các giao dịch theo ngày.
+
+Ví dụ:
+
+Ngày 08/09/2026.
+
++ 15.000.000đ – Lương.
+
+- 50.000đ – Ăn sáng.
+
+- 100.000đ – Hóa đơn.
+
+- 70.000đ – Đi chợ.
+
+Thu màu xanh, chi màu đỏ.
+
+Khi chọn một ngày khác, danh sách tự động cập nhật.
+
+Có thể lọc:
+- Chỉ thu.
+- Chỉ chi.
+- Tất cả.
+- Theo tài khoản.
+- Theo danh mục.
+
+---
+
+# 4. BÁO CÁO CHI TIẾT
+
+Đây là khu vực phân tích sâu về lịch sử tài chính.
+
+## 4.1. Bộ lọc thời gian
+
+Cho phép lựa chọn:
+
+- Một ngày cụ thể.
+- Khoảng thời gian.
+- Một tháng.
+- Một năm.
+- Tùy chọn từ ngày đến ngày.
+
+Có bộ lọc tài khoản, danh mục và loại giao dịch.
+
+## 4.2. Tổng quan báo cáo
+
+Hiển thị:
+
+- Tổng thu.
+- Tổng chi.
+- Chênh lệch.
+- Số giao dịch.
+- Khoản thu lớn nhất.
+- Khoản chi lớn nhất.
+
+Có biểu đồ hình tròn thể hiện tỷ lệ các khoản chi.
+
+Mỗi danh mục có một màu riêng.
+
+Ví dụ:
+
+| Danh mục | Số tiền | Tỷ lệ |
+|---|---:|---:|
+| Ăn uống | 2.000.000đ | 40% |
+| Đi chợ | 1.000.000đ | 20% |
+| Mua sắm | 1.500.000đ | 30% |
+| Di chuyển | 500.000đ | 10% |
+
+Khi bấm vào một phần biểu đồ, hệ thống lọc danh sách giao dịch tương ứng.
+
+Có thể chuyển giữa:
+- Biểu đồ thu.
+- Biểu đồ chi.
+- Biểu đồ tổng hợp.
+
+Không cộng chung khoản thu và chi để tạo tỷ lệ phần trăm gây hiểu nhầm.
+
+## 4.3. Timeline thu chi
+
+Đây là phần cần được thiết kế đặc biệt đẹp và dễ quan sát.
+
+Sử dụng dạng timeline dọc.
+
+Mỗi giao dịch là một thẻ thông tin riêng.
+
+Bố cục:
+
+- Cột dọc bên trái: đường timeline và thời gian.
+- Khu vực bên phải: nội dung giao dịch.
+
+Trong mỗi thẻ:
+
+Hàng đầu tiên:
+- Hình ảnh giao dịch nếu có.
+- Nếu không có ảnh, hiển thị sticker đại diện cho danh mục.
+- Tên danh mục thu/chi.
+- Màu nền nhận diện danh mục.
+
+Hàng thứ hai:
+- Nội dung ghi chú.
+- Ví dụ: Mua rau, mua cá, ăn sáng, TikTok, Shopee.
+
+Hàng thứ ba:
+- Số tiền.
+- Thu hiển thị dấu + màu xanh.
+- Chi hiển thị dấu – màu đỏ.
+- Nền màu nhạt hơn màu chữ.
+
+Ví dụ:
+
+08:30
+
+<Ảnh món ăn>
+
+**Ăn uống**
+
+Ăn sáng – Bánh cuốn.
+
+<ĐỎ NHẠT> -35.000đ.
+
+12:15
+
+<Sticker giỏ hàng>
+
+**Đi chợ**
+
+Mua rau và cá.
+
+<ĐỎ NHẠT> -120.000đ.
+
+15:30
+
+<Sticker tiền>
+
+**Lương**
+
+Nhận lương tháng 9.
+
+<XANH NHẠT> +15.000.000đ.
+
+Cho phép:
+- Bấm xem chi tiết.
+- Sửa giao dịch.
+- Xóa giao dịch.
+- Xem ảnh đính kèm.
+- Xem tài khoản thanh toán.
+- Xem thời điểm ghi nhận.
+- Sắp xếp theo thời gian tăng hoặc giảm dần.
+
+Nếu giao dịch không có giờ cụ thể, hiển thị nhóm "Không xác định giờ" thay vì tự bịa thời gian.
+
+## 4.4. So sánh và phân tích
+
+Bổ sung:
+- So sánh tháng này với tháng trước.
+- So sánh chi tiêu theo danh mục.
+- Biểu đồ thu chi theo ngày.
+- Biểu đồ thu chi theo tuần.
+- Biểu đồ theo tháng.
+- Phát hiện khoản chi tăng bất thường dựa trên lịch sử đã có.
+
+Các nhận xét tự động phải dựa trên dữ liệu thật.
+
+Ví dụ:
+
+"Chi tiêu ăn uống tháng này tăng 25% so với tháng trước."
+
+Không đưa ra nhận xét nếu không đủ dữ liệu so sánh.
+
+## 4.5. Xuất báo cáo
+
+Cho phép xuất:
+- Excel.
+- CSV.
+- PDF.
+
+Báo cáo phải có:
+- Thời gian.
+- Danh mục.
+- Nội dung.
+- Tài khoản.
+- Số tiền.
+- Tổng thu.
+- Tổng chi.
+- Chênh lệch.
+
+Có thể lựa chọn xuất toàn bộ hoặc chỉ dữ liệu đang lọc.
+
+---
+
+# 5. KHÁC – CÁC SỔ THEO DÕI ĐỘC LẬP
+
+Đây là khu vực cho phép người dùng tự tạo những không gian quản lý tài chính riêng, không ảnh hưởng đến sổ chính.
+
+## 5.1. Tạo tab/sổ riêng
+
+Có nút "+ Tạo sổ mới".
+
+Người dùng được tự đặt:
+- Tên sổ.
+- Ảnh đại diện hoặc sticker.
+- Màu sắc.
+- Mô tả.
+- Ngày bắt đầu.
+- Ngày kết thúc nếu có.
+
+Ví dụ:
+- Du lịch Đà Lạt.
+- Du lịch Phú Quốc.
+- Tiền ăn uống chung.
+- Tiệc sinh nhật.
+- Mua sắm Tết.
+- Quỹ gia đình.
+- Dự án cá nhân.
+
+Mỗi sổ có giao diện quản lý riêng.
+
+## 5.2. Quản lý thu chi trong sổ riêng
+
+Mỗi sổ có:
+- Tổng tiền đóng góp.
+- Tổng tiền đã chi.
+- Số dư còn lại.
+- Danh sách người đóng góp nếu cần.
+- Danh sách giao dịch.
+- Hình ảnh.
+- Ghi chú.
+- Timeline.
+- Báo cáo riêng.
+
+Ví dụ:
+
+Sổ Du lịch Đà Lạt.
+
+Người A đóng góp: 2.000.000đ.
+
+Người B đóng góp: 2.000.000đ.
+
+Người C đóng góp: 1.000.000đ.
+
+Tổng quỹ: 5.000.000đ.
+
+Chi khách sạn: 2.000.000đ.
+
+Chi ăn uống: 1.000.000đ.
+
+Còn lại: 2.000.000đ.
+
+QUY TẮC BẮT BUỘC:
+
+- Không cộng các khoản thu vào tổng thu của sổ chính.
+- Không cộng các khoản chi vào tổng chi của sổ chính.
+- Không làm thay đổi số dư tài khoản chính.
+- Không ảnh hưởng ngân sách tháng.
+- Không xuất hiện trong báo cáo tài chính chung.
+- Chỉ hiển thị trong chính sổ được tạo.
+
+Nếu người dùng muốn phản ánh một giao dịch từ sổ riêng vào tài khoản chính, phải có thao tác chuyển đổi hoặc ghi nhận riêng, có cảnh báo tránh ghi nhận hai lần.
+
+## 5.3. Nhật ký riêng
+
+Tạo một khu vực nhật ký dạng sổ tay.
+
+Người dùng có thể:
+- Viết nội dung tự do.
+- Thêm ngày.
+- Thêm ảnh.
+- Chỉnh sửa.
+- Xóa.
+- Tạo ghi chú mới bằng dấu +.
+
+Ví dụ:
+
+Nhật ký đi chợ ngày 08/09/2026.
+
+"Hôm nay mua cá, rau cải, thịt heo và một ít trái cây. Giá cá hôm nay hơi cao."
+
+Mỗi ngày có thể có một hoặc nhiều ghi chú.
+
+Có thể tìm kiếm nhật ký theo từ khóa và thời gian.
+
+Nhật ký độc lập với dữ liệu thu chi, không tự động tạo giao dịch.
+
+---
+
+# VI. CÀI ĐẶT CHUNG
+
+Thiết kế một khu vực cài đặt riêng, phân chia theo nhóm.
+
+## 1. Giao diện
+
+- Chọn màu chủ đạo.
+- Chọn giao diện sáng/tối.
+- Điều chỉnh kích thước chữ.
+- Chọn kiểu hiển thị giao dịch.
+- Ẩn hoặc hiện số dư.
+- Tùy chỉnh sticker.
+- Bật/tắt hiệu ứng hoạt hình.
+
+## 2. Tài khoản
+
+- Email hoặc số điện thoại định danh.
+- Đổi mật khẩu cục bộ.
+- Đổi mã PIN.
+- Bật/tắt khóa ứng dụng.
+- Thiết lập thời gian tự động khóa.
+
+## 3. Quản lý tài khoản tài chính
+
+- Thêm ví.
+- Thêm ngân hàng.
+- Thêm tiền mặt.
+- Sửa tên.
+- Sửa màu.
+- Sửa sticker.
+- Điều chỉnh số dư.
+- Ngừng sử dụng.
+
+## 4. Quản lý danh mục
+
+- Danh mục thu.
+- Danh mục chi.
+- Sticker.
+- Màu sắc.
+- Thứ tự hiển thị.
+- Từ viết tắt.
+
+## 5. Thiết lập tiền tệ
+
+Mặc định:
+- Việt Nam đồng (VND).
+- Ký hiệu: đ.
+- Múi giờ: Asia/Ho_Chi_Minh.
+- Ngôn ngữ: Tiếng Việt.
+
+## 6. Sao lưu dữ liệu
+
+- Xuất bản sao lưu.
+- Nhập bản sao lưu.
+- Kiểm tra dữ liệu.
+- Hiển thị ngày sao lưu gần nhất.
+- Nhắc sao lưu định kỳ.
+
+## 7. Quản lý dữ liệu
+
+- Xem dung lượng lưu trữ.
+- Xóa dữ liệu theo khoảng thời gian.
+- Xóa giao dịch.
+- Xóa toàn bộ dữ liệu.
+
+Các thao tác xóa quan trọng phải có xác nhận nhiều bước.
+
+---
+
+# VII. THIẾT KẾ HỆ THỐNG NHẬP SỐ TIỀN THÔNG MINH
+
+Đây là yêu cầu rất quan trọng vì người dùng thường xuyên nhập các khoản tiền nhỏ.
+
+## 1. Định dạng số
+
+Tất cả số tiền phải được lưu dưới dạng số nguyên VND, không sử dụng số thực dấu phẩy động để tính toán tiền.
+
+Định dạng hiển thị:
+
+- 1.000đ.
+- 10.000đ.
+- 50.000đ.
+- 100.000đ.
+- 1.000.000đ.
+- 15.000.000đ.
+
+Sử dụng định dạng Việt Nam với dấu chấm ngăn cách hàng nghìn.
+
+## 2. Chế độ nhập nhanh thêm ba số 0
+
+Có công tắc:
+
+**Bật chế độ nhập nhanh (×1.000).**
+
+Khi bật:
+- Nhập 15 → 15.000đ.
+- Nhập 50 → 50.000đ.
+- Nhập 100 → 100.000đ.
+- Nhập 1500 → 1.500.000đ.
+
+Khi tắt:
+- Nhập 15 → 15đ.
+- Nhập 50 → 50đ.
+- Nhập 50000 → 50.000đ.
+
+Phải hiển thị rõ chế độ đang sử dụng để tránh người dùng nhập sai.
+
+Không được tự động nhân 1.000 lần thứ hai nếu người dùng đã nhập số tiền có đơn vị đầy đủ như "50.000".
+
+## 3. Trải nghiệm nhập số
+
+- Tự động bỏ các số 0 thừa ở đầu.
+- Không hiển thị số 0 giả làm dữ liệu.
+- Tự động thêm dấu phân cách hàng nghìn.
+- Cho phép xóa nhanh toàn bộ.
+- Cho phép chỉnh sửa giữa chuỗi số.
+- Không để mất chữ số khi bàn phím điện thoại thay đổi.
+- Hỗ trợ bàn phím số trên điện thoại.
+- Không tự động làm tròn số tiền.
+- Kiểm tra giới hạn số tiền hợp lệ.
+
+Ví dụ:
+
+Người dùng nhập 50000.
+
+Giao diện hiển thị 50.000đ.
+
+Giá trị lưu trữ là 50000.
+
+Giá trị hiển thị và giá trị tính toán phải được tách biệt.
+
+---
+
+# VIII. CÁC QUY TẮC NGHIỆP VỤ VÀ TÍNH TOÁN BẮT BUỘC
+
+Đây là phần đặc biệt quan trọng. Không được chỉ xây dựng giao diện mà bỏ qua logic dữ liệu.
+
+## 1. Công thức số dư tài khoản
+
+Số dư hiện tại:
+
+Số dư ban đầu + Tổng tiền thu vào - Tổng tiền chi ra + Tiền chuyển đến - Tiền chuyển đi + Các điều chỉnh hợp lệ.
+
+## 2. Chuyển tiền giữa các tài khoản
+
+Ví dụ:
+
+Chuyển 1.000.000đ từ BIDV sang MoMo.
+
+Kết quả:
+- BIDV giảm 1.000.000đ.
+- MoMo tăng 1.000.000đ.
+- Tổng số tiền thực tế không đổi.
+- Không tính là khoản thu.
+- Không tính là khoản chi.
+- Không làm thay đổi ngân sách tháng.
+
+Phải có chức năng chuyển tiền riêng.
+
+## 3. Ngân sách tháng
+
+Ngân sách còn lại = Ngân sách dự kiến - Tổng chi hợp lệ trong tháng.
+
+Nếu kết quả âm, hiển thị số tiền vượt ngân sách.
+
+Thu nhập không tự động làm tăng ngân sách chi tiêu nếu người dùng chưa thiết lập quy tắc riêng.
+
+## 4. Giao dịch lịch sử
+
+Mọi giao dịch cần có:
+- ID duy nhất.
+- Loại giao dịch.
+- Số tiền.
+- Danh mục.
+- Tài khoản.
+- Ngày giao dịch.
+- Giờ giao dịch nếu có.
+- Thời điểm tạo.
+- Thời điểm cập nhật.
+- Ghi chú.
+- Hình ảnh.
+- Trạng thái.
+
+Không được xóa giao dịch mà không cập nhật lại số dư và các báo cáo liên quan.
+
+## 5. Chỉnh sửa và xóa
+
+Khi sửa giao dịch:
+- Tính lại số dư tài khoản cũ.
+- Cập nhật tài khoản mới nếu thay đổi.
+- Tính lại báo cáo.
+- Tính lại ngân sách.
+- Cập nhật lịch.
+
+Khi xóa:
+- Hiển thị xác nhận.
+- Tính lại số dư.
+- Tính lại thống kê.
+- Cập nhật lịch.
+- Không để số liệu cũ tồn tại trong dashboard.
+
+## 6. Khoản vay và cho vay
+
+Phân biệt rõ:
+- Tiền thực tế đang có.
+- Tài sản cho vay.
+- Nợ phải trả.
+- Tiết kiệm.
+
+Không cộng các khoản nợ phải trả vào tài sản.
+
+Không cộng khoản cho vay vào tiền mặt đang sử dụng.
+
+Lãi suất phải có cách tính rõ ràng, ngày bắt đầu, kỳ tính lãi và phương thức làm tròn.
+
+## 7. Sổ độc lập
+
+Mỗi sổ có mã nhận dạng và không gian dữ liệu riêng.
+
+Không được đưa giao dịch của sổ riêng vào truy vấn báo cáo chung.
+
+Phải có cơ chế phân biệt dữ liệu:
+- Sổ chính.
+- Sổ riêng.
+- Sổ tài sản.
+- Sổ công nợ.
+- Nhật ký.
+
+---
+
+# IX. THIẾT KẾ CÁC THÀNH PHẦN UX/UI ƯU TIÊN
+
+1. Nút + Thêm giao dịch luôn dễ nhìn.
+2. Nút micro để nhập giọng nói.
+3. Nút camera để chụp hóa đơn.
+4. Ô nhập nhanh bằng văn bản.
+5. Bộ lọc ngày/tháng.
+6. Bộ lọc tài khoản.
+7. Bộ lọc danh mục.
+8. Biểu đồ có tương tác.
+9. Timeline dễ quan sát.
+10. Các thẻ số dư.
+11. Thanh tiến trình ngân sách.
+12. Modal chỉnh sửa giao dịch.
+13. Thông báo xác nhận lưu.
+14. Trạng thái không có dữ liệu.
+15. Tìm kiếm giao dịch.
+16. Nút ẩn số dư.
+17. Nút quay lại vị trí trước đó.
+
+Đặc biệt, quy trình thêm một giao dịch thông thường phải tối giản:
+
+Bước 1: Bấm nút thêm.
+
+Bước 2: Chọn Thu hoặc Chi.
+
+Bước 3: Nhập số tiền và nội dung.
+
+Bước 4: Hệ thống tự nhận diện danh mục, tài khoản, ngày giờ nếu có đủ thông tin.
+
+Bước 5: Kiểm tra và bấm Lưu.
+
+Không bắt buộc phải đi qua nhiều màn hình.
+
+---
+
+# X. CẤU TRÚC DỮ LIỆU ĐỀ XUẤT
+
+Thiết kế cơ sở dữ liệu có quan hệ rõ ràng, dễ mở rộng.
+
+Các nhóm dữ liệu:
+
+1. UserProfile: Hồ sơ người dùng cục bộ.
+2. FinancialAccounts: Các tài khoản tiền mặt, ngân hàng, ví.
+3. Transactions: Giao dịch thu chi.
+4. Categories: Danh mục thu chi.
+5. Budgets: Ngân sách tháng.
+6. BudgetCategories: Ngân sách từng danh mục.
+7. Transfers: Giao dịch chuyển tiền.
+8. Savings: Sổ tiết kiệm.
+9. LoansGiven: Sổ cho vay.
+10. LoansTaken: Sổ đi vay.
+11. LoanRepayments: Lịch sử trả nợ và thu hồi nợ.
+12. FinancialEvents: Sự kiện trên lịch.
+13. CustomLedgers: Các sổ tài chính riêng.
+14. LedgerTransactions: Giao dịch thuộc sổ riêng.
+15. DiaryEntries: Nhật ký.
+16. Attachments: Hình ảnh và tệp đính kèm.
+17. UserSettings: Cài đặt cá nhân.
+18. QuickInputAliases: Các từ viết tắt.
+19. BalanceAdjustments: Lịch sử điều chỉnh số dư.
+20. BackupHistory: Lịch sử sao lưu.
+
+Mỗi bảng phải có ID duy nhất, thời gian tạo và cập nhật phù hợp.
+
+Đảm bảo dữ liệu được lưu bền vững và các giao dịch cập nhật số dư phải được xử lý nhất quán, tránh lưu một nửa giao dịch khi xảy ra lỗi.
+
+---
+
+# XI. KIỂM THỬ VÀ ĐẢM BẢO CHẤT LƯỢNG
+
+Trước khi hoàn thành website, phải kiểm tra các trường hợp sau:
+
+**Kiểm thử giao dịch**
+
+- Thêm khoản thu.
+- Thêm khoản chi.
+- Sửa khoản thu.
+- Sửa khoản chi.
+- Xóa giao dịch.
+- Chuyển tiền giữa hai tài khoản.
+- Nhập giao dịch bằng chữ.
+- Nhập giao dịch bằng giọng nói.
+- Chụp hóa đơn.
+- Đính kèm hình ảnh.
+
+**Kiểm thử tính toán**
+
+- Tổng số dư tài khoản.
+- Ngân sách còn lại.
+- Vượt ngân sách.
+- Tổng thu tháng.
+- Tổng chi tháng.
+- Tỷ lệ từng danh mục.
+- So sánh tháng trước.
+- Lãi cho vay.
+- Nợ còn phải trả.
+
+**Kiểm thử thời gian**
+
+- Tháng có 28, 29, 30, 31 ngày.
+- Năm nhuận.
+- Ngày cuối tháng.
+- Ngày đầu năm.
+- Nhập giao dịch của ngày quá khứ.
+- Thay đổi múi giờ.
+- Ngày âm lịch.
+- Sự kiện lặp lại hằng năm.
+
+**Kiểm thử dữ liệu**
+
+- Đóng website và mở lại.
+- Tắt Internet.
+- Tải lại trang.
+- Khôi phục bản sao lưu.
+- Xuất dữ liệu.
+- Nhập dữ liệu trùng lặp.
+- Kiểm tra dữ liệu sau khi sửa và xóa.
+
+**Kiểm thử giao diện**
+
+- Điện thoại màn hình nhỏ.
+- Điện thoại màn hình lớn.
+- Tablet.
+- Desktop.
+- Chế độ sáng.
+- Chế độ tối.
+- Bàn phím số.
+- Bàn phím tiếng Việt.
+
+Không tuyên bố website hoàn chỉnh nếu các chức năng cốt lõi chưa được kiểm thử thực tế.
+
+---
+
+# XII. THỨ TỰ TRIỂN KHAI DỰ ÁN
+
+Không xây dựng tất cả chức năng một cách rời rạc.
+
+Hãy chia dự án thành các giai đoạn có quan hệ logic.
+
+**GIAI ĐOẠN 1 – NỀN TẢNG**
+
+- Thiết lập dự án.
+- Thiết kế giao diện tổng thể.
+- Xây dựng hệ thống điều hướng.
+- Xây dựng cơ sở dữ liệu IndexedDB.
+- Tạo hồ sơ người dùng cục bộ.
+- Xây dựng cài đặt cơ bản.
+- Xây dựng hệ thống màu sắc và sticker.
+
+**GIAI ĐOẠN 2 – QUẢN LÝ TÀI CHÍNH CỐT LÕI**
+
+- Tài khoản ngân hàng, ví và tiền mặt.
+- Thêm, sửa, xóa giao dịch.
+- Thu và chi.
+- Chuyển tiền.
+- Dashboard.
+- Ngân sách tháng.
+- Tính toán số dư.
+
+**GIAI ĐOẠN 3 – NHẬP LIỆU THÔNG MINH**
+
+- Nhập nhanh bằng văn bản.
+- Từ viết tắt tùy chỉnh.
+- Nhập bằng giọng nói.
+- Nhận dạng hóa đơn.
+- Chụp ảnh sản phẩm.
+- Xác nhận giao dịch.
+
+**GIAI ĐOẠN 4 – LỊCH VÀ BÁO CÁO**
+
+- Lịch tài chính.
+- Lịch âm.
+- Sự kiện đặc biệt.
+- Timeline.
+- Biểu đồ tròn.
+- Biểu đồ thu chi.
+- Báo cáo theo ngày/tháng/năm.
+
+**GIAI ĐOẠN 5 – CÁC SỔ RIÊNG**
+
+- Tiết kiệm.
+- Cho vay.
+- Đi vay.
+- Quản lý công nợ.
+- Sổ du lịch.
+- Sổ tài chính tùy chỉnh.
+- Nhật ký.
+
+**GIAI ĐOẠN 6 – HOÀN THIỆN**
+
+- Sao lưu.
+- Khôi phục.
+- Xuất Excel/PDF.
+- Tối ưu hiệu năng.
+- Kiểm thử toàn hệ thống.
+- Hoàn thiện responsive.
+- Kiểm tra bảo mật.
+- Hoàn thiện PWA.
+
+Không bỏ qua các giai đoạn nền tảng để chạy theo việc thiết kế những màn hình đẹp mắt.
+
+---
+
+# XIII. YÊU CẦU ĐẦU RA CUỐI CÙNG
+
+Tôi không cần một bản mô tả lý thuyết, một hình ảnh minh họa website hay một giao diện tĩnh.
+
+Tôi cần một sản phẩm website có thể sử dụng thực tế.
+
+Yêu cầu cuối cùng:
+
+1. Thiết kế đầy đủ tất cả màn hình.
+2. Xây dựng đầy đủ các chức năng đã mô tả.
+3. Các nút bấm phải hoạt động.
+4. Dữ liệu phải được lưu trữ thực tế.
+5. Các phép tính thu chi phải chính xác.
+6. Các danh mục phải có thể tùy chỉnh.
+7. Hình ảnh phải được lưu và hiển thị đúng giao dịch.
+8. Các báo cáo phải lấy dữ liệu thực tế.
+9. Các sổ riêng phải độc lập với sổ chính.
+10. Website phải sử dụng được trên điện thoại và máy tính.
+11. Không phụ thuộc backend trực tuyến.
+12. Có chức năng sao lưu và khôi phục.
+13. Không để lỗi định dạng ngày tháng, tiền tệ hoặc tiếng Việt.
+14. Không tạo nút giả, dữ liệu giả hoặc tính năng chỉ có giao diện.
+
+Nếu một chức năng cần công nghệ bổ sung mà môi trường hiện tại không hỗ trợ, hãy xây dựng phương án thay thế phù hợp, giải thích rõ giới hạn và không giả vờ rằng chức năng đã hoạt động.
+
+**NGUYÊN TẮC ƯU TIÊN CAO NHẤT:**
+
+- Chính xác về dữ liệu tài chính.
+- Không làm mất dữ liệu.
+- Không tính trùng thu chi.
+- Không làm sai số dư.
+- Không trộn lẫn các sổ độc lập.
+- Thao tác nhập liệu nhanh.
+- Giao diện trực quan và thân thiện.
+- Dễ mở rộng trong tương lai.
+
+Hãy bắt đầu bằng việc xây dựng cấu trúc hệ thống, thiết kế kiến trúc dữ liệu và giao diện tổng thể. Sau đó triển khai từng giai đoạn, kiểm thử từng chức năng trước khi chuyển sang giai đoạn tiếp theo.
+
+Không tự ý lược bỏ bất kỳ yêu cầu nghiệp vụ nào trong bản đặc tả này. Nếu cần điều chỉnh kỹ thuật, phải giữ nguyên mục đích và trải nghiệm mà người dùng mong muốn.

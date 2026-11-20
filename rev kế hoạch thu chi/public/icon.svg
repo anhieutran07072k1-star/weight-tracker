@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <rect width="512" height="512" rx="112" fill="#E9F7EF"/>
+  <!-- Left leaf -->
+  <path d="M254 156C228 112 184 88 158 106C136 121 154 168 214 176C230 178 244 171 254 156Z" fill="#20B889" stroke="#294D3E" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Right leaf -->
+  <path d="M262 156C286 108 334 86 358 106C378 123 356 170 298 176C282 178 270 170 262 156Z" fill="#2DD49F" stroke="#294D3E" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Radish round body -->
+  <path d="M256 160C180 160 132 214 132 282C132 350 186 402 246 416C252 430 256 444 256 448C262 434 268 424 274 414C334 398 380 348 380 282C380 214 332 160 256 160Z" fill="#FFFFFF" stroke="#294D3E" stroke-width="12" stroke-linejoin="round"/>
+  <!-- Blush cheeks -->
+  <ellipse cx="192" cy="296" rx="22" ry="13" fill="#FDA4AF" opacity="0.7"/>
+  <ellipse cx="320" cy="296" rx="22" ry="13" fill="#FDA4AF" opacity="0.7"/>
+  <!-- Happy curved eyes -->
+  <path d="M196 268C202 256 218 256 224 268" stroke="#294D3E" stroke-width="10" stroke-linecap="round"/>
+  <path d="M288 268C294 256 310 256 316 268" stroke="#294D3E" stroke-width="10" stroke-linecap="round"/>
+  <!-- Cute smile -->
+  <path d="M238 298C248 312 264 312 274 298" stroke="#294D3E" stroke-width="9" stroke-linecap="round"/>
+  <!-- Little coin highlight -->
+  <circle cx="378" cy="144" r="36" fill="#F2B85B" stroke="#294D3E" stroke-width="8"/>
+  <text x="378" y="156" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="34" fill="#294D3E">đ</text>
+</svg>

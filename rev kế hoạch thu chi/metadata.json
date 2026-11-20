@@ -1,0 +1,6 @@
+{
+  "name": "Kế Hoạch Thu Chi",
+  "description": "Ứng dụng quản lý tài chính cá nhân thông minh, lưu trữ cục bộ (Local-first) với ngân sách tháng, lịch âm dương, báo cáo chi tiết và các sổ theo dõi độc lập.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
